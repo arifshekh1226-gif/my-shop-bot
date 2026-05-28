@@ -7,12 +7,7 @@ module.exports = (bot) => {
 
         const upiLink = `upi://pay?pa=${upiID}&pn=${encodeURIComponent(name)}&am=${amount}&cu=INR&tn=${encodeURIComponent(note)}`;
         
-        ctx.reply("💰 Payment karne ke liye neeche link par click karein:", {
-            reply_markup: {
-                inline_keyboard: [
-                    [{ text: "Pay Now 💸", url: upiLink }]
-                ]
-            }
-        });
+        // Button hata kar message mein link de rahe hain
+        ctx.reply(`💰 Payment karne ke liye neeche diye gaye link par click karein:\n\n${upiLink}\n\n(Agar click nahi ho raha, toh link copy karke browser mein paste karein)`);
     });
 };
