@@ -1,12 +1,25 @@
-module.exports = (bot) => {
-    bot.command('pay', (ctx) => {
-        const upiID = "xejaj@fam"; 
-        const name = "ShopOwner";
-        const amount = "100";
-        const note = "Key Payment";
+module.exports = (bot, data, saveData) => {
+    // 1. /buy likhte hi buttons dikhaye
+    bot.command('buy', (ctx) => {
+        ctx.reply("🛒 **Premium Shop Menu**\nSelect your item below:", {
+            reply_markup: {
+                inline_keyboard: [
+                    [{ text: "💎 Buy Fluorite Key", callback_data: 'buy_fluorite' }],
+                    [{ text: "📞 Contact Admin", url: "https://t.me/TumharaUsername" }]
+                ]
+            }
+        });
+    });
 
-        const upiLink = `upi://pay?pa=${upiID}&pn=${encodeURIComponent(name)}&am=${amount}&cu=INR&tn=${encodeURIComponent(note)}`;
-        
-        ctx.reply(`💰 Payment karne ke liye neeche diye gaye link par click karein:\n\n${upiLink}\n\n(Agar click nahi ho raha, toh link copy karke browser mein paste karein)`);
+    // 2. Button click hone par action perform kare
+    bot.action('buy_fluorite', (ctx) => {
+        if (data.keys.fluorite.length > 0) {
+            const key = data.keys.fluorite.shift();
+            saveData();
+            // User ko message edit karke key dikha do
+            ctx.editMessageText(`✅ **Purchase Successful!**\n\nYour Key: \`${key}\`\n\n*Copy this carefully.*`, { parse_mode: 'Markdown' });
+        } else {
+            ctx.answerCbQuery("❌ Out of stock! Please contact admin.");
+        }
     });
 };
