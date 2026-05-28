@@ -1,25 +1,16 @@
-module.exports = (bot, data, saveData) => {
-    // 1. /buy likhte hi buttons dikhaye
-    bot.command('buy', (ctx) => {
-        ctx.reply("🛒 **Premium Shop Menu**\nSelect your item below:", {
+module.exports = (bot) => {
+    bot.command('pay', (ctx) => {
+        const upiID = "xejaj@fam"; 
+        const name = "ShopOwner";
+        const amount = "100";
+        const upiLink = `upi://pay?pa=${upiID}&pn=${encodeURIComponent(name)}&am=${amount}&cu=INR`;
+        
+        ctx.reply("💰 **Payment Section**\n\nScan QR or click below to pay:", {
             reply_markup: {
                 inline_keyboard: [
-                    [{ text: "💎 Buy Fluorite Key", callback_data: 'buy_fluorite' }],
-                    [{ text: "📞 Contact Admin", url: "https://t.me/TumharaUsername" }]
+                    [{ text: "Pay Now 💸", url: upiLink }]
                 ]
             }
         });
-    });
-
-    // 2. Button click hone par action perform kare
-    bot.action('buy_fluorite', (ctx) => {
-        if (data.keys.fluorite.length > 0) {
-            const key = data.keys.fluorite.shift();
-            saveData();
-            // User ko message edit karke key dikha do
-            ctx.editMessageText(`✅ **Purchase Successful!**\n\nYour Key: \`${key}\`\n\n*Copy this carefully.*`, { parse_mode: 'Markdown' });
-        } else {
-            ctx.answerCbQuery("❌ Out of stock! Please contact admin.");
-        }
     });
 };
