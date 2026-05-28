@@ -1,5 +1,5 @@
 const fs = require('fs');
-const ADMIN_ID = 'YOUR_TELEGRAM_ID_HERE';
+const ADMIN_ID = '7918372543';
 
 module.exports = (bot, data, saveData) => {
     bot.command('addkey', (ctx) => {
