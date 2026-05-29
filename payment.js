@@ -1,15 +1,20 @@
-module.exports = (bot) => {
-    bot.command('pay', (ctx) => {
-        const upiID = "xejaj@fam"; 
-        const name = "ShopOwner";
-        const amount = "100";
-        const upiLink = `upi://pay?pa=${upiID}&pn=${encodeURIComponent(name)}&am=${amount}&cu=INR`;
+module.exports = (bot, data, saveData) => {
+    bot.command('addbalance', (ctx) => {
+        ctx.reply("💰 **Payment System**\n\n1. Pay ₹100 to `xejaj@fam`\n2. Send the Screenshot here.\n\nAfter sending, wait for Admin approval.");
+    });
+
+    // Jab user photo bheje
+    bot.on('photo', (ctx) => {
+        const userId = ctx.from.id;
+        ctx.reply("✅ Screenshot received! Admin check kar raha hai...");
         
-        ctx.reply("💰 **Payment Section**\n\nScan QR or click below to pay:", {
+        // Admin ko forward karo
+        bot.telegram.sendPhoto('ADMIN_ID_HERE', ctx.message.photo[0].file_id, {
+            caption: `User ${userId} wants to add ₹100. Approve?`,
             reply_markup: {
-                inline_keyboard: [
-                    [{ text: "Pay Now 💸", url: upiLink }]
-                ]
+                inline_keyboard: [[
+                    { text: "Approve ✅", callback_data: `approve_${userId}` }
+                ]]
             }
         });
     });
