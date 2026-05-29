@@ -9,7 +9,7 @@ module.exports = (bot, data, saveData) => {
                     ],
                     // Dusra button (Row 2)
                     [
-                        { text: "📞 Contact Admin", url: "https://t.me/TumharaUsername" }
+                        { text: "📞 Contact Admin", url: "https://t.me/cy992" }
                     ]
                 ]
             }
