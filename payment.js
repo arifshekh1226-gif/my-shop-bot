@@ -1,21 +1,21 @@
-// payment.js ke andar bot.on('photo') wala part:
+module.exports = (bot, data, saveData) => {
 
-bot.on('photo', (ctx) => {
-    // Agar user caption mein amount likhe (jaise "170")
-    const caption = ctx.message.caption || "0";
-    const amount = parseInt(caption) || 0; 
-    
-    const fileId = ctx.message.photo[ctx.message.photo.length - 1].file_id;
-    const userId = ctx.from.id.toString();
-
-    // Admin ko screenshot bhejo
-    bot.telegram.sendPhoto(ADMIN_ID, fileId, {
-        caption: `👤 New Payment\n💰 Amount: ₹${amount}\n🆔 User ID: ${userId}\n\nApprove button dabao:`,
-        reply_markup: {
-            inline_keyboard: [
-                [{ text: `✅ Approve ₹${amount}`, callback_data: `approve_${userId}_${amount}` }]
-            ]
-        }
+    bot.action('pay_menu', (ctx) => {
+        ctx.answerCbQuery();
+        ctx.editMessageText("💳 UPI: `xejaj@fam`\nSend screenshot here.", { 
+            reply_markup: { inline_keyboard: [[{text:"🔙 Back", callback_data:'main_menu'}]] } 
+        });
     });
-    ctx.reply("✅ Screenshot bheja gaya! Admin verify karke balance add kar dega.");
-});
+
+    bot.on('photo', (ctx) => {
+        const amt = parseInt(ctx.message.caption) || 0;
+        const uid = ctx.from.id;
+        // ADMIN_ID yahan bhi wahi honi chahiye jo tumne admin.js mein use ki hai
+        bot.telegram.sendPhoto('7918372543', ctx.message.photo[0].file_id, { 
+            caption: `User: ${uid}\nAmount: ${amt}`, 
+            reply_markup: { inline_keyboard: [[{text:`✅ Approve ${amt}`, callback_data:`approve_${uid}_${amt}`}]] } 
+        });
+        ctx.reply("✅ Sent to admin!");
+    });
+
+}; // <--- Yeh closing bracket zaroori hai!
