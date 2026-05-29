@@ -5,13 +5,15 @@ const bot = new Telegraf(process.env.BOT_TOKEN);
 let data = JSON.parse(fs.readFileSync('data.json', 'utf8'));
 const saveData = () => fs.writeFileSync('data.json', JSON.stringify(data, null, 2));
 
-bot.start((ctx) => {
-    ctx.reply("👋 Welcome to Premium Shop!", {
+bot.action('main_menu', (ctx) => {
+    ctx.answerCbQuery();
+    ctx.editMessageText(`✨ **GAMING KEY SHOP**\n\n🔒 Premium Gaming Keys Marketplace\n⚡ Instant Delivery.\n💎 Trusted Automated Key Distribution\n\n👋 Welcome back!`, {
         reply_markup: {
             inline_keyboard: [
-                [{ text: "🛒 Buy Keys", callback_data: 'buy_menu' }],
-                [{ text: "💳 Add Balance", callback_data: 'pay_menu' }],
-                [{ text: "📞 Contact Admin", url: "https://t.me/cy992" }]
+                [{ text: "• Purchase Key •", callback_data: 'buy_menu' }],
+                [{ text: "• Account •", callback_data: 'account' }, { text: "• History •", callback_data: 'history' }],
+                [{ text: "• Deposit Fund •", callback_data: 'pay_menu' }],
+                [{ text: "• Feedback •", callback_data: 'feedback' }]
             ]
         }
     });
