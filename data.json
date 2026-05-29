@@ -1,5 +1,6 @@
 {
-  "keys": {
-    "fluorite": []
-  }
+  "users": {
+    "123456789": { "balance": 0 }
+  },
+  "keys": { "fluorite": [] }
 }
