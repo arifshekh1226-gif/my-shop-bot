@@ -1,6 +1,4 @@
 {
-  "users": {
-    "123456789": { "balance": 0 }
-  },
-  "keys": { "fluorite": [] }
+  "users": { "7918372543": { "balance": 500 } },
+  "keys": { "fluorite": ["KEY-123", "KEY-456"] }
 }
