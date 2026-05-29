@@ -1,25 +1,22 @@
 module.exports = (bot, data, saveData) => {
-    bot.command('buy', (ctx) => {
-        ctx.reply("🛒 **Shop Menu**\nSelect your product below:", {
+    bot.action('buy_menu', (ctx) => {
+        ctx.editMessageText("🛒 **Shop Menu:**", {
             reply_markup: {
                 inline_keyboard: [
-                    // Ek button (Row 1)
-                    [
-                        { text: "💎 Buy Fluorite Key", callback_data: 'buy_fluorite' }
-                    ],
-                    // Dusra button (Row 2)
-                    [
-                        { text: "📞 Contact Admin", url: "https://t.me/cy992" }
-                    ]
+                    [{ text: "💎 Buy Fluorite Key (₹100)", callback_data: 'buy_fluorite' }],
+                    [{ text: "🔙 Back", callback_data: 'main_menu' }]
                 ]
             }
         });
     });
 
-    // Button click hone par action trigger karna
     bot.action('buy_fluorite', (ctx) => {
-        // Yahan tumhara logic ayega (Key dena, balance check karna etc)
-        ctx.answerCbQuery("Processing..."); // Click karne par loading effect
-        ctx.reply("✅ Process start ho gaya hai!");
+        const uid = ctx.from.id.toString();
+        if (!data.users[uid] || data.users[uid].balance < 100) return ctx.answerCbQuery("❌ Insufficient balance!");
+        
+        const key = data.keys.fluorite.shift();
+        data.users[uid].balance -= 100;
+        saveData();
+        ctx.editMessageText("✅ Key: `" + key + "`", { parse_mode: 'Markdown' });
     });
 };
