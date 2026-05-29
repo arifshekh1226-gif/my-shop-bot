@@ -24,4 +24,9 @@ require('./admin')(bot, data, saveData);
 require('./shop')(bot, data, saveData);
 require('./payment')(bot, data, saveData);
 
-bot.launch().then(() => console.log("🚀 Bot is running!"));
+// Force Launch with dropPendingUpdates to clear old messages
+bot.launch({ dropPendingUpdates: true }).then(() => {
+    console.log("🚀 Bot is live and polling!");
+}).catch((err) => {
+    console.error("❌ Launch Error:", err);
+});
