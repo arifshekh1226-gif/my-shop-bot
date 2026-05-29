@@ -1,28 +1,29 @@
 const { Telegraf } = require('telegraf');
 const fs = require('fs');
 
-// Bot Token Railway ke Variable se le raha hai
+// Bot Token load karo
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
-// Database Load aur Save ka function
+// Database load
 let data = JSON.parse(fs.readFileSync('data.json', 'utf8'));
-const saveData = () => {
-    fs.writeFileSync('data.json', JSON.stringify(data, null, 2));
-};
+const saveData = () => fs.writeFileSync('data.json', JSON.stringify(data, null, 2));
 
-// Modules Import kar rahe hain
-require('./admin')(bot, data, saveData);
-require('./shop')(bot, data, saveData);
-require('./payment')(bot);
-
-// Welcome message
+// Start Command with Inline Buttons
 bot.start((ctx) => {
-    ctx.reply('Welcome to the Shop!\n\nCommands:\n/buy - Key khareedne ke liye\n/pay - Payment details\n/addkey - Admin only');
+    ctx.reply("👋 **Welcome to Premium Shop!**\n\nChoose an option:", {
+        reply_markup: {
+            inline_keyboard: [
+                [{ text: "🛒 Buy Keys", callback_data: 'buy_menu' }],
+                [{ text: "💳 Add Balance", callback_data: 'pay_menu' }],
+                [{ text: "📞 Support", url: "https://t.me/TumharaUsername" }]
+            ]
+        }
+    });
 });
 
-// Bot Start
-bot.launch().then(() => console.log("🚀 Bot Running!"));
+// Load Modules
+require('./admin')(bot, data, saveData);
+require('./shop')(bot, data, saveData);
+require('./payment')(bot, data, saveData);
 
-// Error handling ke liye
-process.once('SIGINT', () => bot.stop('SIGINT'));
-process.once('SIGTERM', () => bot.stop('SIGTERM'));
+bot.launch().then(() => console.log("🚀 System Online!"));
