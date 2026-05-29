@@ -1,29 +1,48 @@
-const { Telegraf } = require('telegraf');
-const fs = require('fs');
-
-// Bot Token load karo
-const bot = new Telegraf(process.env.BOT_TOKEN);
-
-// Database load
-let data = JSON.parse(fs.readFileSync('data.json', 'utf8'));
-const saveData = () => fs.writeFileSync('data.json', JSON.stringify(data, null, 2));
-
-// Start Command with Inline Buttons
-bot.start((ctx) => {
-    ctx.reply("👋 **Welcome to Premium Shop!**\n\nChoose an option:", {
-        reply_markup: {
-            inline_keyboard: [
-                [{ text: "🛒 Buy Keys", callback_data: 'buy_menu' }],
-                [{ text: "💳 Add Balance", callback_data: 'pay_menu' }],
-                [{ text: "📞 Support", url: "https://t.me/cy992" }]
-            ]
-        }
+module.exports = (bot, data, saveData) => {
+    
+    // 1. Buy Menu
+    bot.action('buy_menu', (ctx) => {
+        ctx.editMessageText("🛒 **Shop Menu**\nSelect your product:", {
+            reply_markup: {
+                inline_keyboard: [
+                    [{ text: "💎 Buy Fluorite Key (₹100)", callback_data: 'buy_fluorite' }],
+                    [{ text: "🔙 Back", callback_data: 'main_menu' }]
+                ]
+            }
+        });
     });
-});
 
-// Load Modules
-require('./admin')(bot, data, saveData);
-require('./shop')(bot, data, saveData);
-require('./payment')(bot, data, saveData);
+    // 2. Buying Logic (Balance Detection)
+    bot.action('buy_fluorite', (ctx) => {
+        const userId = ctx.from.id.toString();
+        
+        // Check if user exists and has balance
+        if (!data.users[userId] || data.users[userId].balance < 100) {
+            return ctx.answerCbQuery("❌ Insufficient balance! Pehle /addbalance karein.");
+        }
 
-bot.launch().then(() => console.log("🚀 System Online!"));
+        // Check if key is available
+        if (!data.keys.fluorite || data.keys.fluorite.length === 0) {
+            return ctx.answerCbQuery("❌ Out of stock! Admin ko batayein.");
+        }
+
+        // Deduct balance and get key
+        data.users[userId].balance -= 100;
+        const key = data.keys.fluorite.shift();
+        saveData();
+
+        ctx.editMessageText(`✅ **Purchase Successful!**\n\nProduct: Fluorite Key\nKey: \`${key}\`\n\nBalance remaining: ₹${data.users[userId].balance}`, { parse_mode: 'Markdown' });
+    });
+
+    // 3. Main Menu Navigation
+    bot.action('main_menu', (ctx) => {
+        ctx.editMessageText("👋 Welcome back to Premium Shop!", {
+            reply_markup: {
+                inline_keyboard: [
+                    [{ text: "🛒 Buy Keys", callback_data: 'buy_menu' }],
+                    [{ text: "💳 Add Balance", callback_data: 'pay_menu' }]
+                ]
+            }
+        });
+    });
+};
