@@ -15,7 +15,7 @@ bot.start((ctx) => {
             inline_keyboard: [
                 [{ text: "🛒 Buy Keys", callback_data: 'buy_menu' }],
                 [{ text: "💳 Add Balance", callback_data: 'pay_menu' }],
-                [{ text: "📞 Support", url: "https://t.me/TumharaUsername" }]
+                [{ text: "📞 Support", url: "https://t.me/cy992" }]
             ]
         }
     });
