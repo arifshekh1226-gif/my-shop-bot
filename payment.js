@@ -2,7 +2,7 @@ module.exports = (bot, data, saveData) => {
 
     bot.action('pay_menu', (ctx) => {
         ctx.answerCbQuery();
-        ctx.editMessageText("💳 UPI: `xejaj@fam`\nSend screenshot here.", { 
+        ctx.editMessageText("💳 UPI: xejaj@fam\nSend screenshot here.", { 
             reply_markup: { inline_keyboard: [[{text:"🔙 Back", callback_data:'main_menu'}]] } 
         });
     });
