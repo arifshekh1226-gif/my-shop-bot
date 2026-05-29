@@ -1,22 +1,18 @@
 module.exports = (bot, data, saveData) => {
-    // Admin ID yahan daal
     const ADMIN_ID = '7918372543'; 
 
     bot.action(/approve_(.+)/, (ctx) => {
-        // Sirf Admin hi approve kar paye
+        // Sirf tumhara account hi ye command chala payega
         if (ctx.from.id.toString() !== ADMIN_ID) {
-            return ctx.answerCbQuery("❌ Tum Admin nahi ho!");
+            return ctx.answerCbQuery("❌ Sirf Admin hi approve kar sakta hai!");
         }
 
-        const userId = ctx.match[1];
-        if (!data.users) data.users = {};
-        if (!data.users[userId]) data.users[userId] = { balance: 0 };
-        
-        // Balance add karo
-        data.users[userId].balance += 100;
+        const uid = ctx.match[1];
+        if (!data.users[uid]) data.users[uid] = { balance: 0 };
+        data.users[uid].balance += 100;
         saveData();
-        
-        ctx.editMessageText("✅ Balance Successfully Added!");
-        bot.telegram.sendMessage(userId, "🎉 Balance update ho gaya! Ab /buy se key khareedo.");
+
+        ctx.editMessageText("✅ Approved!");
+        bot.telegram.sendMessage(uid, "🎉 Balance add ho gaya!");
     });
 };
