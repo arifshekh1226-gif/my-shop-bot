@@ -1,7 +1,6 @@
 const { Markup } = require('telegraf');
 
 module.exports = (bot) => {
-    // 1. Purchase Menu (Button click trigger)
     bot.action('buy_menu', (ctx) => {
         ctx.answerCbQuery();
         ctx.editMessageText("🛒 **Select Your Plan:**", {
@@ -15,10 +14,10 @@ module.exports = (bot) => {
         });
     });
 
-    // 2. Plan Selection Action (Regex use karo)
     bot.action(/plan_(.+)/, (ctx) => {
         ctx.answerCbQuery();
-        const plan = ctx.match[1]; // yahan 1d, 7d, ya 30d aayega
+        const plan = ctx.match[1];
+        ctx.session.selectedPlan = plan; // Yahan plan save ho gaya
         
         ctx.editMessageText(`✅ **Plan: ${plan.toUpperCase()}**\n\n` +
             `UPI: yourname@upi\n` +
