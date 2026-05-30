@@ -1,21 +1,29 @@
-module.exports = (bot, data, saveData) => {
-    // Apni Telegram User ID yahan daal
-    const ADMIN_ID = '7918372543'; 
+const { Markup } = require('telegraf');
 
-    bot.action(/approve_(.+)_(\d+)/, (ctx) => {
-        // Security check: Sirf Admin hi approve kar sake
-        if (ctx.from.id.toString() !== ADMIN_ID) {
-            return ctx.answerCbQuery("❌ Access Denied! Tum Admin nahi ho.");
-        }
+module.exports = (bot) => {
+    // 1. Admin Command: Nayi Key add karne ke liye
+    // Format: /addkey 1d YOUR_KEY_HERE
+    bot.command('addkey', (ctx) => {
+        if (ctx.from.id != 7918372543) return; // Sirf tu use kar payega
 
-        const uid = ctx.match[1];
-        const amt = parseInt(ctx.match[2]);
+        const args = ctx.message.text.split(' ');
+        if (args.length < 3) return ctx.reply("Galat format! Use: /addkey 1d KEY_XYZ");
 
-        if (!data.users[uid]) data.users[uid] = { balance: 0 };
-        data.users[uid].balance += amt;
-        saveData();
+        const plan = args[1]; // 1d, 7d, 30d
+        const key = args[2];
+        
+        // Yahan database/file mein save karne ka logic (jo tumhara pehle se hai)
+        // saveKeyToDatabase(plan, key); 
+        
+        ctx.reply(`✅ ${plan} ke liye key add ho gayi: ${key}`);
+    });
 
-        ctx.editMessageText(`✅ Approved! ₹${amt} added to User ID: ${uid}`);
-        bot.telegram.sendMessage(uid, `🎉 Payment Approved! ₹${amt} aapke balance mein add ho gaye.`);
+    // 2. Admin Approve button ka logic
+    bot.action(/approve_(.+)/, async (ctx) => {
+        const userId = ctx.match[1];
+        
+        // Admin se key maango
+        ctx.session.pendingApproval = userId;
+        ctx.editMessageText(`User ${userId} ke liye Key paste karo:`);
     });
 };
