@@ -1,9 +1,7 @@
 const { Markup } = require('telegraf');
 
 module.exports = (bot) => {
-    const ADMIN_ID = "7918372543";
-
-    // 1. Menu dikhana
+    // 1. Menu Action
     bot.action('buy_menu', (ctx) => {
         ctx.answerCbQuery();
         ctx.editMessageText("🛒 **Select Your Plan:**", {
@@ -19,13 +17,11 @@ module.exports = (bot) => {
         });
     });
 
-    // 2. Plan selection aur UPI dikhana
-    bot.action(/plan_(.+)/, (ctx) => {
+    // 2. Plan Click Handling (Regex ke bina, direct handle)
+    const handlePlan = async (ctx, plan) => {
         ctx.answerCbQuery();
-        const plan = ctx.match[1];
-        ctx.session.selectedPlan = plan; 
-        
-        ctx.editMessageText(`✅ **Plan: ${plan.toUpperCase()}**\n\n` +
+        ctx.session.selectedPlan = plan;
+        await ctx.editMessageText(`✅ **Plan: ${plan.toUpperCase()}**\n\n` +
             `UPI: yourname@upi\n\n` +
             `Payment karke Screenshot yahan bhejein.`, {
             parse_mode: 'Markdown',
@@ -33,24 +29,30 @@ module.exports = (bot) => {
                 inline_keyboard: [[{ text: "🔙 Back to Plans", callback_data: 'buy_menu' }]]
             }
         });
-    });
+    };
 
-    // 3. Screenshot handle karke Admin ko bhejna (Combined Logic)
+    bot.action('plan_1d', (ctx) => handlePlan(ctx, '1d'));
+    bot.action('plan_7d', (ctx) => handlePlan(ctx, '7d'));
+    bot.action('plan_30d', (ctx) => handlePlan(ctx, '30d'));
+
+    // 3. Photo Handling (Screenshot Admin ko bhejne ke liye)
     bot.on('photo', async (ctx) => {
-        if (!ctx.session || !ctx.session.selectedPlan) return;
-
+        if (!ctx.session.selectedPlan) {
+            return ctx.reply("❌ Pehle Plan select karein.");
+        }
+        
+        const photo = ctx.message.photo[ctx.message.photo.length - 1].file_id;
         const userId = ctx.from.id;
         const plan = ctx.session.selectedPlan;
-        const photo = ctx.message.photo[ctx.message.photo.length - 1].file_id;
 
-        await bot.telegram.sendPhoto(ADMIN_ID, photo, {
-            caption: `🔔 **New Payment Verification**\n\n👤 User ID: ${userId}\n📅 Plan: ${plan.toUpperCase()}`,
+        // Admin ko bhejo
+        await bot.telegram.sendPhoto("7918372543", photo, {
+            caption: `🔔 **New Payment!**\nUser ID: ${userId}\nPlan: ${plan.toUpperCase()}`,
             reply_markup: {
                 inline_keyboard: [[{ text: "✅ Approve & Send Key", callback_data: `approve_${userId}` }]]
             }
         });
-
         ctx.reply("✅ Screenshot bhej diya gaya hai. Admin jald hi approve karega.");
-        ctx.session.selectedPlan = null; // Session clear
+        ctx.session.selectedPlan = null; // Session reset
     });
 };
