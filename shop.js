@@ -6,10 +6,11 @@ module.exports = (bot) => {
         ctx.answerCbQuery();
         ctx.editMessageText("🛒 **Select Your Plan:**", {
             parse_mode: 'Markdown',
-            reply_markup: Markup.inlineKeyboard([
+            ...Markup.inlineKeyboard([
                 [Markup.button.callback('1 Day (₹299)', 'pay_1d')],
                 [Markup.button.callback('7 Days (₹999)', 'pay_7d')],
-                [Markup.button.callback('30 Days (₹1799)', 'pay_30d')]
+                [Markup.button.callback('30 Days (₹1799)', 'pay_30d')],
+                [Markup.button.callback('🔙 Back to Menu', 'main_menu')] // Back Button
             ])
         });
     });
