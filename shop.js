@@ -1,10 +1,11 @@
 const { Markup } = require('telegraf');
 
 module.exports = (bot) => {
-    // 1. Purchase Key button click karne par Plans dikhao
+    // Menu: Plan selection
     bot.action('buy_menu', (ctx) => {
         ctx.answerCbQuery();
         ctx.editMessageText("🛒 **Select Your Plan:**", {
+            parse_mode: 'Markdown',
             reply_markup: Markup.inlineKeyboard([
                 [Markup.button.callback('1 Day (₹299)', 'plan_1d')],
                 [Markup.button.callback('7 Days (₹999)', 'plan_7d')],
@@ -13,16 +14,18 @@ module.exports = (bot) => {
         });
     });
 
-    // 2. Plan select karne par Payment Info
+    // Payment step: Plan save hoga aur UPI dikhega
     bot.action(/plan_(.+)/, (ctx) => {
         ctx.answerCbQuery();
-        const plan = ctx.match[1]; // 1d, 7d, ya 30d
+        const plan = ctx.match[1]; // 1d, 7d, 30d
+        ctx.session.selectedPlan = plan; // Yahan plan save ho gaya
         
-        ctx.editMessageText(`Aapne ${plan.toUpperCase()} plan select kiya hai.\n\n` +
+        ctx.editMessageText(`Aapne **${plan.toUpperCase()}** select kiya hai.\n\n` +
             `UPI ID: yourname@upi\n\n` +
             `Payment karne ke baad Screenshot yahan bhejein.`, {
+            parse_mode: 'Markdown',
             reply_markup: Markup.inlineKeyboard([
-                [Markup.button.callback('🔙 Back to Plans', 'buy_menu')]
+                [Markup.button.callback('🔙 Back', 'buy_menu')]
             ])
         });
     });
