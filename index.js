@@ -4,16 +4,14 @@ require('dotenv').config();
 const bot = new Telegraf(process.env.BOT_TOKEN);
 bot.use(session());
 
-// Modules load karo
+// Modules
 require('./shop')(bot);
-// require('./admin')(bot); // Filhal ise hata do, pehle shop test karenge
+require('./admin')(bot);
 
-// Bot start
-bot.start((ctx) => ctx.reply("✨ Bot is ready! Click below:", {
+bot.start((ctx) => ctx.reply("✨ **CY SHOP**\n\n🔒 Premium Gaming Keys\n⚡ Instant Delivery\n\n👋 Welcome!", {
     reply_markup: {
-        inline_keyboard: [[{ text: "• Shop •", callback_data: 'buy_menu' }]]
+        inline_keyboard: [[{ text: "• Purchase Key •", callback_data: 'buy_menu' }]]
     }
 }));
 
-bot.launch({ dropPendingUpdates: true })
-    .then(() => console.log("🚀 Bot is LIVE!"));
+bot.launch({ dropPendingUpdates: true }).then(() => console.log("🚀 Bot is LIVE!"));
