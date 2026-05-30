@@ -9,7 +9,7 @@ module.exports = (bot) => {
         ctx.session.selectedPlan = plan; // Plan save ho gaya
         
         ctx.editMessageText(`✅ **Plan: ${plan.toUpperCase()}**\n\n` +
-            `UPI: yourname@upi\n\n` +
+            `UPI: xejaj@fam\n\n` +
             `Payment karne ke baad Screenshot yahan bhejein.`, {
             parse_mode: 'Markdown',
             ...Markup.inlineKeyboard([
